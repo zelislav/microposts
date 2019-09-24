@@ -7,6 +7,9 @@ document.addEventListener("DOMContentLoaded", getPosts);
 // Listen for submiting post
 document.querySelector(".post-submit").addEventListener("click", submitPost);
 
+// Listen for delete
+document.querySelector("#posts").addEventListener("click", deletePost);
+
 // Get Posts
 function getPosts() {
   http
@@ -25,7 +28,7 @@ function submitPost() {
     body
   };
 
-  //   Create Post
+  // Create Post
   http
     .post("http://localhost:3000/posts", data)
     .then(data => {
@@ -34,4 +37,23 @@ function submitPost() {
       getPosts();
     })
     .catch(err => console.log(err));
+}
+
+// Delete Post
+function deletePost(e) {
+  if (e.target.parentElement.classList.contains("delete")) {
+    // this will give that particular link
+    const id = e.target.parentElement.dataset.id;
+    if (confirm("Are you sure")) {
+      http
+        .delete(`http://localhost:3000/posts/${id}`)
+        .then(data => {
+          ui.showAlert("Post Removed", "alert alert-success");
+          getPosts();
+        })
+        .catch(err => console.log(err));
+    }
+  }
+
+  e.preventDefault();
 }
